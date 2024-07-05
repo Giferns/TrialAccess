@@ -85,9 +85,12 @@
 		1.0.1 (16.01.2022):
 			* Changed:
 				* Cvar 'ta_restrict_time_mode' expanded to support 'CMSStats MySQL'
+		1.0.2 (05.07.2024):
+			* Changed:
+				* Added support for GameCMS
 */
 
-new const PLUGIN_DATE[] = "1.0.1"
+new const PLUGIN_DATE[] = "1.0.2"
 
 #include <amxmodx>
 #include <amxmisc>
@@ -929,6 +932,14 @@ func_RegCvars() {
 #if defined AUTO_CFG
 	AutoExecConfig()
 #endif
+}
+
+/* -------------------- */
+
+public OnAPIAdminConnected(id, const szName[], adminID, Flags) {
+	if(!is_user_bot(id)) {
+		task_CheckPlayer(id)
+	}
 }
 
 /* -------------------- */
