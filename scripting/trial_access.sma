@@ -82,9 +82,12 @@
 				* Conversion to semantic versioning
 			Fixed:
 				* 'get_member: invalid or uninitialized entity' error
+		1.0.1 (16.01.2022):
+			* Changed:
+				* Cvar 'ta_restrict_time_mode' expanded to support 'CMSStats MySQL'
 */
 
-new const PLUGIN_DATE[] = "1.0.0"
+new const PLUGIN_DATE[] = "1.0.1"
 
 #include <amxmodx>
 #include <amxmisc>
@@ -197,6 +200,10 @@ native get_user_gametime(id)
 #define GAMETIME 14
 native csstats_get_user_value(id, iType)
 native csstats_is_user_connected(id)
+
+// CMSStats MySQL 2.1.2 https://cs-games.club/index.php?threads/cmsstats-mysql.30/
+#define GAMECMS_GAMETIME 14 // GAMETIME in STATS_ARR_SIZE
+native cmsstats_get_user_value(id, ident)
 
 // AES
 native aes_get_player_stats(id, data[4])
@@ -336,6 +343,9 @@ public clcmd_GetTrial(pPlayer) {
 				}
 				case 3: {
 					iTime = csstats_get_user_value(pPlayer, GAMETIME)
+				}
+				case 4: {
+					iTime = cmsstats_get_user_value(pPlayer, GAMECMS_GAMETIME)
 				}
 			}
 
@@ -549,6 +559,9 @@ public task_CheckPlayer(pPlayer) {
 					}
 					case 3: {
 						iTime = csstats_get_user_value(pPlayer, GAMETIME)
+					}
+					case 4: {
+						iTime = cmsstats_get_user_value(pPlayer, GAMECMS_GAMETIME)
 					}
 				}
 
@@ -826,12 +839,13 @@ func_RegCvars() {
 
 	bind_pcvar_num( create_cvar( "ta_restrict_time_mode", "0",
 		.has_min = true, .min_val = 0.0,
-		.has_max = true, .max_val = 3.0,
+		.has_max = true, .max_val = 4.0,
 		.description = "Restrict by time mode (see 'ta_restrict_time'):^n\
 		0 - Off^n\
 		1 - Use 'Simple Online Logger'^n\
 		2 - Use 'CSstatsX SQL' by serfreeman1337^n\
-		3 - Use 'CSstats MySQL' by SKAJIbnEJIb" ),
+		3 - Use 'CSstats MySQL' by SKAJIbnEJIb^n\
+		4 - Use 'CMSStats MySQL'" ),
 		g_eCvar[CVAR__RESTRICT_TIME_MODE] );
 
 	bind_pcvar_num( create_cvar( "ta_restrict_time", "120",
